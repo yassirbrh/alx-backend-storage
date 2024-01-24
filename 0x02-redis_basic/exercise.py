@@ -3,7 +3,7 @@
     class Cache.
 '''
 import redis
-from typing import Union
+from typing import Callable, Union
 import uuid
 
 
@@ -11,6 +11,8 @@ class Cache:
     '''
         Class Cache.
     '''
+    union: Union[str, bytes, int, float]
+    
     def __init__(self):
         '''
             The constructor of the class Cache.
@@ -28,3 +30,28 @@ class Cache:
         uid = str(uuid.uuid4())
         self._redis.set(uid, data)
         return uid
+
+    def get(self, key: str, fn: Callable = None) -> "Cache.union":
+        '''
+            Function that returns the data after being type casted using
+            the Callable.
+        '''
+        data = self._redis.get(key)
+        if fn:
+            return fn(data)
+        else:
+            return data
+
+    def get_str(self, key: str) -> Union[str, bytes, int, float]:
+        '''
+            Function that returns the data in a string format.
+        '''
+        data = self.get(key, lambda x: x.decode("utf-8"))
+        return data
+
+    def get_int(self, key: str) -> Union[str, bytes, int, float]:
+        '''
+            Function that returns the data in an integer format.
+        '''
+        data = self.get(key, lambda x: int(x))
+        return data
