@@ -3,16 +3,36 @@
     class Cache.
 '''
 import redis
-from typing import Callable, Union
+from typing import Any, Callable, Union
+from functools import wraps
 import uuid
 
+
+def count_calls(method: Callable) -> Callable:
+    '''
+        Decorator count_calls.
+    '''
+    @wraps(method)
+    def func(self, *args, **kwargs) -> Any:
+        '''
+            func: function
+            @self: redis object.
+            @args: list of arguments.
+            @kwargs: list of keyworded arguments.
+            return: method
+        '''
+        if isinstance(self._redis, redis.Redis):
+            self._redis.incr(method.__qualname__)
+        return method(self, *args, **kwargs)
+    return func
+    
 
 class Cache:
     '''
         Class Cache.
     '''
     union: Union[str, bytes, int, float]
-    
+
     def __init__(self):
         '''
             The constructor of the class Cache.
@@ -20,6 +40,7 @@ class Cache:
         self._redis = redis.Redis()
         self._redis.flushdb()
 
+    @count_calls
     def store(self, data: Union[str, bytes, int, float]) -> str:
         '''
             Method that takes a data argument and returns a string.
