@@ -25,7 +25,30 @@ def count_calls(method: Callable) -> Callable:
             self._redis.incr(method.__qualname__)
         return method(self, *args, **kwargs)
     return func
-    
+
+
+def call_history(method: Callable) -> Callable:
+    '''
+        Decorator call_history
+    '''
+    @wraps(method)
+    def func(self, *args, **kwargs) -> Any:
+        '''
+            func: function
+            @self: redis object.
+            @args: list of arguments.
+            @kwargs: list of keyworded arguments.
+            return: method
+        '''
+        input_key = "{}:inputs".format(method.__qualname__)
+        output_key = "{}:outputs".format(method.__qualname__)
+        if isinstance(self._redis, redis.Redis):
+            self._redis.rpush(input_key, str(args))
+            final_output = method(self, *args, **kwargs)
+            self._redis.rpush(output_key, final_output)
+        return final_output
+    return func
+
 
 class Cache:
     '''
@@ -41,6 +64,7 @@ class Cache:
         self._redis.flushdb()
 
     @count_calls
+    @call_history
     def store(self, data: Union[str, bytes, int, float]) -> str:
         '''
             Method that takes a data argument and returns a string.
