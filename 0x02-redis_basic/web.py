@@ -3,9 +3,9 @@
     get_page function that it uses the requests module
     to obtain the HTML content of a particular URL and returns it.
 '''
-from functools import wraps
 import redis
 import requests
+from functools import wraps
 from typing import Callable
 
 
@@ -50,4 +50,3 @@ def get_page(url: str) -> str:
     except requests.exceptions.RequestException as e:
         print(f"Error: {e}")
         return None
-
