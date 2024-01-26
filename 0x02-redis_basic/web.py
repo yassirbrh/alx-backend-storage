@@ -14,6 +14,7 @@ redis_inst = redis.Redis()
     Redis instance
 '''
 
+
 def access_count(func: Callable) -> Callable:
     '''
         access_count: decorator
