@@ -32,7 +32,9 @@ def print_log_data(collection):
             ip_counts[log.get('ip')] = 1
         if log.get('method') in methods:
             methods[log.get('method')] += 1
-    sorted_ip_counts = dict(sorted(ip_counts.items(), key=lambda item: item[1], reverse=True))
+    sorted_ip_counts = dict(
+        sorted(ip_counts.items(), key=lambda item: item[1], reverse=True)
+        )
     print('{} logs'.format(num_of_logs))
     print('Methods:')
     for key, value in methods.items():
@@ -41,6 +43,7 @@ def print_log_data(collection):
     print('IPs:')
     for key, value in sorted_ip_counts.items():
         print('\t{}: {}'.format(key, value))
+
 
 if __name__ == '__main__':
     client = MongoClient('mongodb://127.0.0.1:27017')
