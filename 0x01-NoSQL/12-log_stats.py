@@ -33,7 +33,7 @@ def print_log_data(collection):
         print('\tmethod {:s}: {:d}'.format(key, value))
     print('{} status check'.format(check_status))
 
-
-client = MongoClient('mongodb://127.0.0.1:27017')
-nginx_collection = client.logs.nginx
-print_log_data(nginx_collection.find())
+if __name__ == '__main__':
+    client = MongoClient('mongodb://127.0.0.1:27017')
+    nginx_collection = client.logs.nginx
+    print_log_data(nginx_collection.find())
