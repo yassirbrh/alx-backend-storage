@@ -41,8 +41,12 @@ def print_log_data(collection):
         print('\tmethod {:s}: {:d}'.format(key, value))
     print('{} status check'.format(check_status))
     print('IPs:')
+    i = 0
     for key, value in sorted_ip_counts.items():
+        if i == 10:
+            break
         print('\t{}: {}'.format(key, value))
+        i += 1
 
 
 if __name__ == '__main__':
